@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#14110E">
+<title>MenuAI — Plataforma</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@3.19.0/dist/tabler-icons.min.css">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="shell">
+
+<nav class="topnav">
+  <span class="logo">MenuAI <span>v0.5 · IA contextual</span></span>
+  <button class="tab-btn active" id="tab-entry"  onclick="switchTab('entry')"><i class="ti ti-qrcode"></i> Entrada</button>
+  <button class="tab-btn"        id="tab-client" onclick="switchTab('client')"><i class="ti ti-device-mobile"></i> Vista cliente</button>
+  <button class="tab-btn"        id="tab-admin"  onclick="switchTab('admin')"><i class="ti ti-layout-dashboard"></i> Panel admin</button>
+</nav>
+
+<div class="main">
+
+<!-- ENTRY -->
+<div class="view active" id="view-entry">
+  <div class="entry-hero">
+    <h1>El Rincón</h1>
+    <p>El menú y garzón digital chileno que aumenta tu ticket con IA contextual y manda el pedido directo a cocina, sin fricción para tu equipo.</p>
+    <div class="tagline">Mesa 7 · Providencia</div>
+  </div>
+  <div class="entry-modes">
+    <div class="entry-card guest" onclick="enterAsGuest()">
+      <div class="entry-icon">👤</div>
+      <h3>Entrar como invitado</h3>
+      <p>Pide directo con recomendaciones generales basadas en popularidad.</p>
+      <div class="entry-badge">Acceso rápido</div>
+    </div>
+    <div class="entry-card user" onclick="showLoginModal()">
+      <div class="entry-icon">⭐</div>
+      <h3>Iniciar sesión</h3>
+      <p>Recomendaciones según tu historial y tus preferencias guardadas.</p>
+      <div class="entry-badge">✦ IA personalizada</div>
+    </div>
+    <div class="entry-card user" onclick="showRegisterModal()">
+      <div class="entry-icon">🎁</div>
+      <h3>Crear cuenta</h3>
+      <p>Define tus preferencias una vez y acumula puntos en cada visita.</p>
+      <div class="entry-badge">Gratis · 1 min</div>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL LOGIN -->
+<div class="modal-overlay" id="modal-login">
+  <div class="modal-box">
+    <h2>Bienvenido de vuelta</h2>
+    <p class="modal-sub">Accede a tus recomendaciones personalizadas y puntos acumulados</p>
+    <div class="mfield"><label>Email</label><input type="email" placeholder="tuemail@gmail.com"></div>
+    <div class="mfield"><label>Contraseña</label><input type="password" placeholder="••••••••"></div>
+    <button class="mbtn" onclick="enterAsUser(true)">Entrar</button>
+    <div class="mfooter"><a onclick="closeModals();showRegisterModal()">¿No tienes cuenta? Crear una gratis</a></div>
+  </div>
+</div>
+
+<!-- MODAL REGISTRO + ONBOARDING -->
+<div class="modal-overlay" id="modal-register">
+  <div class="modal-box">
+    <div class="onb-progress">
+      <div class="onb-dot active" id="dot-0"></div>
+      <div class="onb-dot" id="dot-1"></div>
+      <div class="onb-dot" id="dot-2"></div>
+      <div class="onb-dot" id="dot-3"></div>
+    </div>
+    <div class="onb-step show" id="onb-0">
+      <h2>Crear cuenta</h2>
+      <p class="modal-sub">Solo te tomará un minuto</p>
+      <div class="modal-benefits">
+        <div class="modal-benefits-title">✦ Por qué registrarte</div>
+        <ul>
+          <li>Recomendaciones IA según tus gustos y restricciones</li>
+          <li>Puntos por cada pedido — canjea descuentos y postres</li>
+          <li>Tu perfil te sigue en toda la red de restaurants MenuAI</li>
+        </ul>
+      </div>
+      <div class="mfield"><label>Nombre</label><input type="text" id="reg-name" placeholder="Sebastián"></div>
+      <div class="mfield"><label>Email</label><input type="email" placeholder="tuemail@gmail.com"></div>
+      <div class="mfield"><label>Contraseña</label><input type="password" placeholder="••••••••"></div>
+      <div class="onb-nav"><button class="mbtn" onclick="onbNext(1)">Continuar →</button></div>
+      <div class="onb-skip" onclick="enterAsUser(false)">Saltar y entrar sin preferencias</div>
+    </div>
+    <div class="onb-step" id="onb-1">
+      <div class="onb-q">¿Tienes alguna restricción alimentaria?</div>
+      <div class="onb-hint">Toca las que apliquen. La IA evitará recomendarte estos platos.</div>
+      <div class="chip-grid" id="chips-restric">
+        <div class="chip" data-val="Sin gluten / celíaco"><span class="chip-emo">🌾</span> Sin gluten <span class="chip-check">✓</span></div>
+        <div class="chip" data-val="Sin lactosa"><span class="chip-emo">🥛</span> Sin lactosa <span class="chip-check">✓</span></div>
+        <div class="chip" data-val="Alergia a mariscos"><span class="chip-emo">🦐</span> Mariscos <span class="chip-check">✓</span></div>
+        <div class="chip" data-val="Alergia a frutos secos"><span class="chip-emo">🥜</span> Frutos secos <span class="chip-check">✓</span></div>
+        <div class="chip" data-val="Alergia al huevo"><span class="chip-emo">🥚</span> Huevo <span class="chip-check">✓</span></div>
+        <div class="chip" data-val="Bajo en sodio / hipertensión"><span class="chip-emo">🧂</span> Bajo en sodio <span class="chip-check">✓</span></div>
+        <div class="chip" data-val="Diabético / bajo en azúcar"><span class="chip-emo">🩸</span> Bajo en azúcar <span class="chip-check">✓</span></div>
+      </div>
+      <div class="onb-nav">
+        <button class="mbtn secondary" style="flex:0 0 90px" onclick="onbNext(0)">← Atrás</button>
+        <button class="mbtn" onclick="onbNext(2)">Continuar →</button>
+      </div>
+      <div class="onb-skip" onclick="onbNext(2)">No tengo restricciones</div>
+    </div>
+    <div class="onb-step" id="onb-2">
+      <div class="onb-q">¿Sigues algún tipo de dieta?</div>
+      <div class="onb-hint">Esto ayuda a la IA a priorizar lo que te calza.</div>
+      <div class="chip-grid" id="chips-dieta">
+        <div class="chip" data-val="Vegetariano"><span class="chip-emo">🥬</span> Vegetariano <span class="chip-check">✓</span></div>
+        <div class="chip" data-val="Vegano"><span class="chip-emo">🌱</span> Vegano <span class="chip-check">✓</span></div>
+        <div class="chip" data-val="Bajo en calorías / fit"><span class="chip-emo">🏃</span> Fit / liviano <span class="chip-check">✓</span></div>
+        <div class="chip" data-val="Alto en proteína"><span class="chip-emo">💪</span> Alto en proteína <span class="chip-check">✓</span></div>
+        <div class="chip" data-val="Como de todo"><span class="chip-emo">🍽️</span> Como de todo <span class="chip-check">✓</span></div>
+      </div>
+      <div class="onb-nav">
+        <button class="mbtn secondary" style="flex:0 0 90px" onclick="onbNext(1)">← Atrás</button>
+        <button class="mbtn" onclick="onbNext(3)">Continuar →</button>
+      </div>
+      <div class="onb-skip" onclick="onbNext(3)">Saltar</div>
+    </div>
+    <div class="onb-step" id="onb-3">
+      <div class="onb-q">¿Qué sabores prefieres?</div>
+      <div class="onb-hint">Último paso. Toca lo que más te gusta.</div>
+      <div class="chip-grid" id="chips-gustos">
+        <div class="chip" data-val="Carnes rojas"><span class="chip-emo">🥩</span> Carnes rojas <span class="chip-check">✓</span></div>
+        <div class="chip" data-val="Pescados y mariscos"><span class="chip-emo">🐟</span> Pescados <span class="chip-check">✓</span></div>
+        <div class="chip" data-val="Pastas"><span class="chip-emo">🍝</span> Pastas <span class="chip-check">✓</span></div>
+        <div class="chip" data-val="Comida picante"><span class="chip-emo">🌶️</span> Picante <span class="chip-check">✓</span></div>
+        <div class="chip" data-val="Vinos y maridajes"><span class="chip-emo">🍷</span> Vinos <span class="chip-check">✓</span></div>
+        <div class="chip" data-val="Postres dulces"><span class="chip-emo">🍰</span> Postres <span class="chip-check">✓</span></div>
+        <div class="chip" data-val="Cocina chilena tradicional"><span class="chip-emo">🇨🇱</span> Chileno <span class="chip-check">✓</span></div>
+      </div>
+      <div class="onb-nav">
+        <button class="mbtn secondary" style="flex:0 0 90px" onclick="onbNext(2)">← Atrás</button>
+        <button class="mbtn" onclick="finishOnboarding()">Listo, entrar ✦</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CLIENTE -->
+<div class="view" id="view-client">
+  <div class="client-view">
+    <div class="phone-wrap">
+      <div class="phone">
+        <div class="phone-header">
+          <div><div class="ph-name">El Rincón</div><div class="ph-sub">MENÚ DIGITAL · MESA 7</div></div>
+          <div class="ph-right">
+            <div class="mesa-chip">Mesa 7</div>
+            <div class="user-chip" id="user-chip" style="display:none"><i class="ti ti-star-filled"></i><span id="user-chip-name">Sebastián</span></div>
+          </div>
+        </div>
+
+        <div class="ai-banner" onclick="showAIPanel()">
+          <div class="ai-icon"><i class="ti ti-sparkles"></i></div>
+          <div class="ai-banner-text"><p id="ai-banner-title">Recomendaciones IA</p><span id="ai-banner-sub">Basado en popularidad y hora</span></div>
+          <i class="ti ti-chevron-right" style="margin-left:auto;color:var(--gold-dim);font-size:14px"></i>
+        </div>
+
+        <div class="ai-nudge" id="ai-nudge" style="display:none" onclick="showAIPanel()">
+          <div class="ai-nudge-dot"></div>
+          <div style="flex:1"><p id="nudge-text">La IA tiene sugerencias para tu pedido</p></div>
+          <button class="ver-btn">Ver →</button>
+        </div>
+
+        <div class="sub-banner points" id="points-banner" style="display:none">
+          <div style="font-size:16px">✦</div>
+          <div><p>Tienes <strong id="points-count">240</strong> puntos</p><span>60 más para un postre gratis</span></div>
+        </div>
+        <div class="sub-banner diet" id="diet-banner" style="display:none">
+          <div style="font-size:14px">🍃</div>
+          <div><p id="diet-banner-text">Perfil activo</p><span>La IA filtra según tus preferencias</span></div>
+        </div>
+        <div class="sub-banner guest" id="guest-banner" style="display:none">
+          <div><p>Estás como invitado</p><span>Regístrate y gana puntos por este pedido</span></div>
+          <button class="upgrade-btn" onclick="showRegisterModal()">Crear cuenta →</button>
+        </div>
+
+        <div class="cat-scroll">
+          <div class="cat-chip active" onclick="setCategory(this,'todos')">Todo</div>
+          <div class="cat-chip" onclick="setCategory(this,'entradas')">Entradas</div>
+          <div class="cat-chip" onclick="setCategory(this,'principales')">Principales</div>
+          <div class="cat-chip" onclick="setCategory(this,'pastas')">Pastas</div>
+          <div class="cat-chip" onclick="setCategory(this,'postres')">Postres</div>
+          <div class="cat-chip" onclick="setCategory(this,'bebestibles')">Bebestibles</div>
+        </div>
+
+        <div class="menu-list" id="menu-list"></div>
+
+        <div class="cart-bar" id="cart-bar" style="display:none" onclick="showOrderPanel()">
+          <div class="cart-bar-left"><div class="cart-count" id="cart-count">0</div><p>Ver pedido</p></div>
+          <span id="cart-total-bar">$0</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- SIDE PANEL -->
+    <div class="side-panel" id="side-panel">
+      <div class="sheet-handle"></div>
+      <div class="sp-header" id="sp-header">
+        <div><h2 id="sp-title">Bienvenido</h2><p id="sp-sub">Toca un plato o revisa las recomendaciones IA</p></div>
+        <div style="display:flex;gap:8px;align-items:center">
+          <button class="chat-toggle-btn" id="chat-toggle-btn" onclick="toggleChat()" title="Chat con Rincón AI"><i class="ti ti-message-chatbot"></i></button>
+          <button class="sp-close" onclick="closeMobilePanel()" aria-label="Cerrar"><i class="ti ti-x"></i></button>
+        </div>
+      </div>
+
+      <!-- CHAT PANEL -->
+      <div class="panel" id="panel-chat">
+        <div class="chat-messages" id="chat-messages">
+          <div class="chat-msg assistant">
+            <div class="chat-avatar"><i class="ti ti-sparkles"></i></div>
+            <div class="chat-bubble">Hola 👋 Soy Rincón AI, tu garzón virtual. Pregúntame sobre los platos, maridajes, ingredientes o cualquier cosa del menú.</div>
+          </div>
+        </div>
+        <div class="chat-input-wrap">
+          <input type="text" class="chat-input" id="chat-input" placeholder="Pregunta algo sobre el menú..." onkeydown="if(event.key==='Enter')sendChat()">
+          <button class="chat-send-btn" onclick="sendChat()"><i class="ti ti-send"></i></button>
+        </div>
+      </div>
+
+      <div class="panel show" id="panel-empty">
+        <div class="empty-state"><i class="ti ti-sparkles"></i><p>Toca cualquier plato para ver sus detalles.<br>La IA generará recomendaciones según lo que elijas y tu perfil.</p></div>
+      </div>
+
+      <div class="panel" id="panel-ai">
+        <div class="ai-msg-box"><div class="ai-avatar"><i class="ti ti-sparkles"></i></div><p id="ai-msg-text">Son las 20:30 — hora peak de cenas. Los platos más pedidos esta noche:</p></div>
+        <div class="ai-sec-label" id="ai-label-live" style="display:none">✦ Sugerencias según tu selección</div>
+        <div id="ai-recs-live"></div>
+        <div class="ai-sec-label" id="ai-label-general">🔥 Populares esta noche</div>
+        <div id="ai-recs-general"></div>
+        <div id="ai-personal-section" style="display:none">
+          <div class="ai-sec-label">⭐ Para ti, según tu perfil</div>
+          <div id="ai-recs-personal"></div>
+        </div>
+      </div>
+
+      <div class="panel" id="panel-detail">
+        <div class="det-hero"><div class="det-emoji" id="det-emoji"></div><div class="det-name" id="det-name"></div><div class="det-price" id="det-price"></div></div>
+        <div class="det-section"><div class="det-label">Descripción</div><p id="det-desc"></p></div>
+        <div id="det-diet-flag-wrap"></div>
+        <div class="det-section"><div class="det-label">Etiquetas</div><div class="det-tags" id="det-tags"></div></div>
+        <div class="det-ai-box">
+          <div class="det-ai-label"><i class="ti ti-sparkles"></i> La IA sugiere combinar con</div>
+          <div id="det-ai-recs"><div class="ai-loading"><div class="ai-skel"></div><div class="ai-skel" style="height:52px"></div></div></div>
+        </div>
+        <button class="det-add-btn" id="det-add-btn"><i class="ti ti-plus"></i> Agregar al pedido</button>
+      </div>
+
+      <div class="panel" id="panel-order">
+        <div id="order-items"></div>
+        <div class="total-box">
+          <div class="total-row"><span>Subtotal</span><span id="ot-sub">$0</span></div>
+          <div class="total-row"><span>IVA (19%)</span><span id="ot-iva">$0</span></div>
+          <div class="total-row main"><span>Total</span><span id="ot-total">$0</span></div>
+        </div>
+        <div id="order-ai-strip"></div>
+        <button class="send-btn" onclick="sendOrder()"><i class="ti ti-send"></i> Enviar a cocina</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ADMIN -->
+<div class="view" id="view-admin">
+  <div class="admin-view">
+    <nav class="admin-sidebar">
+      <div class="sb-brand"><div class="sb-brand-name">MenuAI</div><div class="sb-brand-rest">El Rincón · Providencia</div></div>
+      <div class="nav-group">Principal</div>
+      <div class="nav-item active" onclick="showAdmin('dashboard',this)"><i class="ti ti-layout-dashboard"></i> Dashboard</div>
+      <div class="nav-item" onclick="showAdmin('pedidos',this)"><i class="ti ti-receipt"></i> Pedidos live</div>
+      <div class="nav-group">Configuración</div>
+      <div class="nav-item" onclick="showAdmin('menu',this)"><i class="ti ti-menu-2"></i> Menú</div>
+      <div class="nav-item" onclick="showAdmin('mesas',this)"><i class="ti ti-armchair"></i> Mesas</div>
+      <div class="nav-group">Inteligencia</div>
+      <div class="nav-item" onclick="showAdmin('insights',this)"><i class="ti ti-brain"></i> Insights IA</div>
+      <div class="nav-item" onclick="showAdmin('clientes',this)"><i class="ti ti-users"></i> Perfiles clientes</div>
+      <div class="nav-item" onclick="showAdmin('analytics',this)"><i class="ti ti-chart-bar"></i> Analytics</div>
+    </nav>
+    <div class="admin-content">
+      <div class="admin-section active" id="admin-dashboard">
+        <div class="page-hdr"><div class="page-title">Resumen de hoy</div><div class="page-sub">Jueves 5 de junio · El Rincón</div></div>
+        <div class="mrow">
+          <div class="mcard"><div class="mlabel">Pedidos hoy</div><div class="mval">47</div><div class="mdelta up"><i class="ti ti-trending-up"></i> +12% vs ayer</div></div>
+          <div class="mcard"><div class="mlabel">Ticket promedio</div><div class="mval">$28.400</div><div class="mdelta up"><i class="ti ti-trending-up"></i> +8% vs ayer</div></div>
+          <div class="mcard"><div class="mlabel">Ventas totales</div><div class="mval">$1,3M</div><div class="mdelta up"><i class="ti ti-trending-up"></i> +15% vs ayer</div></div>
+          <div class="mcard"><div class="mlabel">Upsell IA</div><div class="mval">$187K</div><div class="mdelta neutral"><i class="ti ti-sparkles"></i> 14% del total</div></div>
+        </div>
+        <div class="card"><div class="card-title">Pedidos por hora</div><div class="bar-chart" id="chart-hourly"></div></div>
+        <div class="two-col">
+          <div class="card" style="margin-bottom:0"><div class="card-title">Top platos del día</div><div class="top-list" id="top-list-dash"></div></div>
+          <div class="card" style="margin-bottom:0"><div class="card-title">Notificaciones</div><div class="notif-list" id="notif-list-dash"></div></div>
+        </div>
+      </div>
+      <div class="admin-section" id="admin-pedidos">
+        <div class="page-hdr"><div class="page-title">Pedidos en curso</div><div class="page-sub">Vista en tiempo real · 5 pedidos activos</div></div>
+        <div class="card"><table class="orders-table"><thead><tr><th>#</th><th>Mesa</th><th>Ítems</th><th>Total</th><th>Hora</th><th>Estado</th><th>Acción</th></tr></thead><tbody id="orders-tbody"></tbody></table></div>
+      </div>
+      <div class="admin-section" id="admin-menu">
+        <div class="menu-admin-toolbar"><div class="page-hdr" style="margin-bottom:0"><div class="page-title">Gestión del menú</div><div class="page-sub">Activa o desactiva platos al instante</div></div><button class="primary-btn"><i class="ti ti-plus"></i> Agregar plato</button></div>
+        <div id="menu-admin-list"></div>
+      </div>
+      <div class="admin-section" id="admin-mesas">
+        <div class="page-hdr"><div class="page-title">Estado de mesas</div><div class="page-sub">20 mesas · 10 ocupadas · 3 con pedido activo</div></div>
+        <div class="card"><div class="mesas-grid" id="mesas-grid"></div><div class="legend">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--gold-bg);border:1px solid var(--gold-line)"></div> Pedido activo</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--blue-bg);border:1px solid rgba(107,163,214,0.3)"></div> Ocupada</div>
+          <div class="legend-item"><div class="legend-dot" style="background:var(--bgc);border:1px solid var(--line)"></div> Libre</div>
+        </div></div>
+      </div>
+      <div class="admin-section" id="admin-insights">
+        <div class="page-hdr"><div class="page-title">Insights IA</div><div class="page-sub">Inteligencia operacional · últimos 30 días</div></div>
+        <div class="insight-grid">
+          <div class="insight-card"><div class="insight-icon">⏰</div><div class="insight-val">20:15</div><div class="insight-label">Hora peak</div><div class="insight-sub">Jue–Sáb. Sube desde 19:30</div></div>
+          <div class="insight-card"><div class="insight-icon">⏱️</div><div class="insight-val">62 min</div><div class="insight-label">Permanencia promedio</div><div class="insight-sub">Finde: 80 min</div></div>
+          <div class="insight-card"><div class="insight-icon">👥</div><div class="insight-val">28–42</div><div class="insight-label">Rango etario</div><div class="insight-sub">Predominante</div></div>
+          <div class="insight-card"><div class="insight-icon">🍃</div><div class="insight-val">31%</div><div class="insight-label">Con restricción dietética</div><div class="insight-sub">Sin gluten lidera</div></div>
+          <div class="insight-card"><div class="insight-icon">📱</div><div class="insight-val">61%</div><div class="insight-label">Tasa de registro</div><div class="insight-sub">39% de invitados convierten</div></div>
+          <div class="insight-card"><div class="insight-icon">📅</div><div class="insight-val">Vie · Sáb</div><div class="insight-label">Días de mayor ticket</div><div class="insight-sub">Vie: $34.200 · Sáb: $37.100</div></div>
+        </div>
+        <div class="two-col">
+          <div class="card" style="margin-bottom:0"><div class="card-title">Combos más frecuentes</div><div class="card-sub">Pares pedidos juntos</div><div id="combo-list"></div></div>
+          <div class="card" style="margin-bottom:0"><div class="card-title">Segmentación de clientes</div><div class="card-sub">Usuarios registrados · 30 días</div><div id="segment-grid"></div></div>
+        </div>
+      </div>
+      <div class="admin-section" id="admin-clientes">
+        <div class="page-hdr"><div class="page-title">Perfiles de clientes</div><div class="page-sub">Usuarios registrados · datos anonimizados con consentimiento</div></div>
+        <div class="mrow">
+          <div class="mcard"><div class="mlabel">Usuarios activos</div><div class="mval">1.240</div><div class="mdelta up"><i class="ti ti-trending-up"></i> +23% este mes</div></div>
+          <div class="mcard"><div class="mlabel">Visitas promedio</div><div class="mval">2,4x</div><div class="mdelta neutral">Por usuario/mes</div></div>
+          <div class="mcard"><div class="mlabel">Ticket usuario reg.</div><div class="mval">$34.100</div><div class="mdelta up">+20% vs invitado</div></div>
+          <div class="mcard"><div class="mlabel">Con perfil dietético</div><div class="mval">31%</div><div class="mdelta neutral">386 usuarios</div></div>
+        </div>
+        <div class="card"><div class="card-title">Historial de clientes frecuentes</div><div class="card-sub">Top clientes — datos anonimizados</div><table class="user-table"><thead><tr><th>ID</th><th>Segmento</th><th>Visitas</th><th>Ticket</th><th>Favorito</th><th>Perfil dietético</th><th>Puntos</th></tr></thead><tbody id="user-table-body"></tbody></table></div>
+        <div class="two-col">
+          <div class="card" style="margin-bottom:0"><div class="card-title">Restricciones dietéticas declaradas</div><div id="diet-dist"></div></div>
+          <div class="card" style="margin-bottom:0"><div class="card-title">Distribución por rango etario</div><div id="age-dist"></div></div>
+        </div>
+      </div>
+      <div class="admin-section" id="admin-analytics">
+        <div class="page-hdr"><div class="page-title">Analytics</div><div class="page-sub">Últimos 7 días</div></div>
+        <div class="mrow">
+          <div class="mcard"><div class="mlabel">Pedidos semana</div><div class="mval">312</div><div class="mdelta up"><i class="ti ti-trending-up"></i> +18%</div></div>
+          <div class="mcard"><div class="mlabel">Ticket promedio</div><div class="mval">$26.800</div><div class="mdelta up"><i class="ti ti-trending-up"></i> +5%</div></div>
+          <div class="mcard"><div class="mlabel">Combo top</div><div class="mval" style="font-size:15px">Lomo + Malbec</div><div class="mdelta neutral">67 veces</div></div>
+          <div class="mcard"><div class="mlabel">Hora peak</div><div class="mval">20:00</div><div class="mdelta neutral">Jue–Sáb</div></div>
+        </div>
+        <div class="two-col">
+          <div class="card" style="margin-bottom:0"><div class="card-title">Ventas diarias</div><div class="bar-chart" id="chart-weekly"></div></div>
+          <div class="card" style="margin-bottom:0"><div class="card-title">Top platos de la semana</div><div class="top-list" id="top-list-analytics"></div></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</div></div>
+<script src="app.js"></script>
+</body>
+</html>
