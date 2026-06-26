@@ -4,7 +4,7 @@
   "description": "MenuAI — Plataforma de menú digital con IA para restaurantes chilenos",
   "main": "server.js",
   "scripts": {
-    "start": "node --env-file=.env server.js",
+    "start": "node server.js",
     "dev": "node --env-file=.env server.js"
   },
   "dependencies": {
