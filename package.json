@@ -4,11 +4,12 @@
   "description": "MenuAI — Plataforma de menú digital con IA para restaurantes chilenos",
   "main": "server.js",
   "scripts": {
-    "start": "node server.js",
-    "dev": "node server.js"
+    "start": "node --env-file=.env server.js",
+    "dev": "node --env-file=.env server.js"
   },
   "dependencies": {
-    "@anthropic-ai/sdk": "^0.27.0",
-    "express": "^4.19.2"
+    "@anthropic-ai/sdk": "^0.105.0",
+    "express": "^4.19.2",
+    "qrcode": "^1.5.4"
   }
 }
