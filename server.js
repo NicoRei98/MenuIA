@@ -5,7 +5,17 @@ const path = require('path');
 const { DatabaseSync } = require('node:sqlite');
 
 // ── DATABASE ──────────────────────────────────────────────────────────
-const db = new DatabaseSync(path.join(__dirname, 'menuai.db'));
+// DB_PATH env var allows mounting a persistent volume in Railway/cloud.
+// On first run with a new volume, seeds the DB from the repo copy.
+const DB_PATH = process.env.DB_PATH || path.join(__dirname, 'menuai.db');
+if (process.env.DB_PATH) {
+  const fs = require('fs');
+  if (!fs.existsSync(DB_PATH)) {
+    fs.copyFileSync(path.join(__dirname, 'menuai.db'), DB_PATH);
+    console.log('DB seeded to', DB_PATH);
+  }
+}
+const db = new DatabaseSync(DB_PATH);
 db.exec('PRAGMA journal_mode = WAL; PRAGMA foreign_keys = ON;');
 db.exec(`
   CREATE TABLE IF NOT EXISTS restaurants (
