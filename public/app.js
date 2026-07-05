@@ -70,20 +70,19 @@ async function init() {
   MENU.forEach(m => { menuItemsActive[m.id] = true; });
   activeRestaurant = NETWORK_RESTAURANTS.find(x => x.id === targetRestId) || NETWORK_RESTAURANTS[0] || null;
 
-  // QR mode: hide admin & red tabs, go straight to client view
+  // QR mode: customer-facing only — hide nav, show entry with login options
   if (isQRMode) {
-    document.getElementById('tab-admin')?.remove();
-    document.getElementById('tab-red')?.remove();
-    // Update entry view labels before switching
+    document.querySelector('.topnav')?.remove();
+    document.querySelector('.entry-qr-section')?.remove();
     const r = activeRestaurant;
     if (r) {
       const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
       set('entry-rest-name', r.name);
-      set('entry-rest-tagline', r.city + ', ' + r.region);
+      set('entry-rest-tagline', currentMesa ? `Mesa ${currentMesa} · ${r.city}` : r.city + ', ' + r.region);
+      set('entry-rest-desc', `Bienvenido a ${r.name}. Elige cómo quieres continuar.`);
     }
     renderMenu();
-    updateEntryQR();
-    switchTab('client');
+    switchTab('entry');
     return;
   }
 
