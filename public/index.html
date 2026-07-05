@@ -215,12 +215,12 @@
 
     <!-- SIDE PANEL -->
     <div class="side-panel" id="side-panel">
-      <div class="sheet-handle"></div>
-      <div class="sp-header" id="sp-header">
+      <div class="sheet-handle" onclick="if(isMobileLayout()&&!document.getElementById('side-panel').classList.contains('mobile-open'))openMobilePanel()"></div>
+      <div class="sp-header" id="sp-header" onclick="if(isMobileLayout()&&!document.getElementById('side-panel').classList.contains('mobile-open'))openMobilePanel()">
         <div><h2 id="sp-title">Bienvenido</h2><p id="sp-sub">Toca un plato o revisa las recomendaciones IA</p></div>
         <div style="display:flex;gap:8px;align-items:center">
-          <button class="chat-toggle-btn" id="chat-toggle-btn" onclick="toggleChat()" title="Chat con Rincón AI"><i class="ti ti-message-chatbot"></i></button>
-          <button class="sp-close" onclick="closeMobilePanel()" aria-label="Cerrar"><i class="ti ti-x"></i></button>
+          <button class="chat-toggle-btn" id="chat-toggle-btn" onclick="event.stopPropagation();toggleChat()" title="Chat con Rincón AI"><i class="ti ti-message-chatbot"></i></button>
+          <button class="sp-close" onclick="event.stopPropagation();closeMobilePanel()" aria-label="Cerrar"><i class="ti ti-x"></i></button>
         </div>
       </div>
 

@@ -328,12 +328,17 @@ function setSpHeader(title, sub) {
 function isMobileLayout() { return window.matchMedia('(max-width:920px)').matches; }
 function openMobilePanel() {
   if (!isMobileLayout()) return;
-  document.getElementById('side-panel').classList.add('mobile-open');
+  const panel = document.getElementById('side-panel');
+  panel.classList.add('mobile-open');
+  panel.style.transform = 'translateY(0)'; // force override in case CSS class isn't enough
   const bd = document.getElementById('mobile-backdrop');
   if (bd) bd.classList.add('show');
 }
 function closeMobilePanel() {
-  document.getElementById('side-panel').classList.remove('mobile-open');
+  const panel = document.getElementById('side-panel');
+  panel.classList.remove('mobile-open');
+  panel.style.transform = 'translateY(100%)'; // animate closed via inline style
+  setTimeout(() => { panel.style.transform = ''; }, 350); // clear after transition
   const bd = document.getElementById('mobile-backdrop');
   if (bd) bd.classList.remove('show');
   chatVisible = false;
@@ -347,7 +352,18 @@ function closeMobilePanel() {
   let startY = 0, currentY = 0, dragging = false;
   function onStart(e) { if (!isMobileLayout()) return; dragging = true; startY = (e.touches ? e.touches[0].clientY : e.clientY); sheet.style.transition = 'none'; }
   function onMove(e)  { if (!dragging) return; currentY = (e.touches ? e.touches[0].clientY : e.clientY); const dy = Math.max(0, currentY - startY); sheet.style.transform = `translateY(${dy}px)`; }
-  function onEnd()    { if (!dragging) return; dragging = false; sheet.style.transition = ''; const dy = currentY - startY; sheet.style.transform = ''; if (dy > 90) closeMobilePanel(); currentY = 0; }
+  function onEnd()    {
+    if (!dragging) return;
+    dragging = false;
+    sheet.style.transition = '';
+    const dy = currentY - startY;
+    if (dy > 90) {
+      closeMobilePanel(); // let closeMobilePanel handle the transform
+    } else {
+      sheet.style.transform = 'translateY(0)'; // snap back open
+    }
+    currentY = 0;
+  }
   [handle, header].forEach(el => {
     if (!el) return;
     el.addEventListener('touchstart', onStart, { passive: true });
