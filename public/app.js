@@ -439,7 +439,7 @@ function removeTyping(id) { document.getElementById(id)?.remove(); }
 function showAIPanel() {
   chatVisible = false;
   document.getElementById('chat-toggle-btn').classList.remove('active');
-  setSpHeader('Recomendaciones IA', 'Para esta hora · Mesa 7');
+  setSpHeader('Recomendaciones IA', currentMesa ? `Para esta hora · Mesa ${currentMesa}` : 'Para esta hora');
   const topItems = restaurantStats?.topItems || [];
   document.getElementById('ai-recs-general').innerHTML = topItems.length
     ? topItems.slice(0, 3).map(it => {
@@ -623,10 +623,21 @@ function changeQty(id, delta) {
 }
 function updateCartBar() {
   const count = Object.values(cart).reduce((a, b) => a + b, 0);
-  const total = Object.entries(cart).reduce((a, [id, q]) => a + MENU.find(m => m.id === +id).price * q, 0);
+  const total = Object.entries(cart).reduce((a, [id, q]) => a + (MENU.find(m => m.id === +id)?.price || 0) * q, 0);
+  const fmtTotal = fmt(total);
+  // Desktop cart bar
   document.getElementById('cart-count').textContent     = count;
-  document.getElementById('cart-total-bar').textContent = fmt(total);
+  document.getElementById('cart-total-bar').textContent = fmtTotal;
   document.getElementById('cart-bar').style.display     = count > 0 ? 'flex' : 'none';
+  // Mobile FAB
+  const fab = document.getElementById('cart-fab');
+  if (fab) {
+    fab.classList.toggle('visible', count > 0);
+    const fabCount = document.getElementById('cart-fab-count');
+    const fabTotal = document.getElementById('cart-fab-total');
+    if (fabCount) fabCount.textContent = count;
+    if (fabTotal) fabTotal.textContent = fmtTotal;
+  }
 }
 function showOrderPanel() {
   if (!Object.keys(cart).length) return;
@@ -683,7 +694,7 @@ async function sendOrder() {
   aiRecsCache = {};
   document.getElementById('ai-nudge').style.display = 'none';
   editSecs = 120;
-  setSpHeader('Pedido enviado', 'Mesa 7 · El Rincón');
+  setSpHeader('Pedido enviado', `${currentMesa ? `Mesa ${currentMesa} · ` : ''}${activeRestaurant?.name || ''}`);
   switchOrderTab('personal');
   document.getElementById('order-content-personal').innerHTML = `
     <div class="sent-box"><div class="big-emo">✅</div><h3>¡Pedido enviado a cocina!</h3><p>Tiempo estimado: 15–20 minutos</p></div>
@@ -853,20 +864,28 @@ function renderTableOrder() {
 }
 
 // ── ADMIN ─────────────────────────────────────────────────────────────
+let adminPollTimer = null;
 function showAdmin(name, el) {
   document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
   document.getElementById('admin-' + name).classList.add('active');
   document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
   el.classList.add('active');
-  if (name === 'pedidos') renderOrders();
-  if (['dashboard','analytics','insights','clientes','mesas'].includes(name)) {
-    loadRestaurantStats().then(() => {
-      if (name === 'dashboard' || name === 'analytics') renderDashboard();
-      if (name === 'insights') renderInsights();
-      if (name === 'clientes') renderClientes();
-      if (name === 'mesas') renderMesas();
-    });
-  }
+
+  if (adminPollTimer) clearInterval(adminPollTimer);
+
+  const refresh = () => {
+    if (name === 'pedidos') renderOrders();
+    if (['dashboard','analytics','insights','clientes','mesas'].includes(name)) {
+      loadRestaurantStats().then(() => {
+        if (name === 'dashboard' || name === 'analytics') renderDashboard();
+        if (name === 'insights') renderInsights();
+        if (name === 'clientes') renderClientes();
+        if (name === 'mesas') renderMesas();
+      });
+    }
+  };
+  refresh();
+  adminPollTimer = setInterval(refresh, 20000);
 }
 
 async function loadRestaurantStats() {

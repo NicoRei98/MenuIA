@@ -609,6 +609,35 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
   .entry-modes{width:100%;max-width:100%}
   .entry-qr-section{max-width:100%}
   .entry-qr-img{width:160px;height:160px}
+
+  /* 19. FAB flotante del carrito — solo mobile */
+  .cart-fab{
+    display:none;
+    position:fixed;
+    bottom:calc(env(safe-area-inset-bottom) + 14px);
+    left:16px;right:16px;
+    background:var(--gold);
+    border-radius:18px;
+    padding:16px 20px;
+    align-items:center;
+    justify-content:space-between;
+    cursor:pointer;
+    z-index:300;
+    box-shadow:0 8px 32px rgba(0,0,0,.45);
+    gap:10px;
+  }
+  .cart-fab.visible{display:flex}
+  .cart-fab-left{display:flex;align-items:center;gap:10px}
+  .cart-fab-badge{background:#1A150E;color:var(--gold);width:28px;height:28px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0}
+  .cart-fab-label{font-size:15px;font-weight:700;color:#1A150E}
+  .cart-fab-right{display:flex;align-items:center;gap:6px;color:#1A150E;font-size:15px;font-weight:700}
+  .cart-fab-right i{font-size:18px}
+
+  /* Ocultar cart-bar original en mobile, usar FAB */
+  .cart-bar{display:none !important}
+
+  /* Padding extra inferior al menu-list para que no quede bajo el FAB */
+  .menu-list{padding-bottom:calc(90px + env(safe-area-inset-bottom)) !important}
 }
 
 /* ── RED NETWORK VIEW ────────────────────────────────────────────────── */
