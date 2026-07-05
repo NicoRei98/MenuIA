@@ -183,6 +183,12 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, 'public')));
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
+// ── HEALTH / DIAGNOSTICS ─────────────────────────────────────────────
+app.get('/api/health', (_req, res) => {
+  const hasKey = !!(process.env.ANTHROPIC_API_KEY && process.env.ANTHROPIC_API_KEY.startsWith('sk-ant-'));
+  res.json({ ok: true, ai: hasKey, env: process.env.NODE_ENV || 'development' });
+});
+
 // ── REST: RESTAURANTS ─────────────────────────────────────────────────
 app.get('/api/restaurants', (_req, res) => {
   const rows = db.prepare('SELECT * FROM restaurants WHERE active=1 ORDER BY rowid').all();
@@ -472,7 +478,11 @@ Responde en máximo 2-3 oraciones. No inventes platos fuera del menú. Si no tie
   try {
     const msg = await client.messages.create({ model:'claude-haiku-4-5-20251001', max_tokens:300, system, messages:messages.map(m=>({role:m.role,content:m.content})) });
     res.json({ reply: msg.content.find(b=>b.type==='text')?.text||'' });
-  } catch(e) { console.error('chat error:',e.message); res.status(500).json({ reply:'Lo siento, intenta de nuevo.' }); }
+  } catch(e) {
+    console.error('chat error:', e.message);
+    const msg = e.status === 401 ? 'API key inválida — revisa la configuración.' : 'Lo siento, intenta de nuevo.';
+    res.status(500).json({ reply: msg });
+  }
 });
 
 // ── GET /api/menu (legacy compat, El Rincón) ──────────────────────────

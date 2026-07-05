@@ -82,6 +82,7 @@ async function init() {
       set('entry-rest-desc', `Bienvenido a ${r.name}. Elige cómo quieres continuar.`);
     }
     renderMenu();
+    loadRestaurantStats();
     switchTab('entry');
     return;
   }
