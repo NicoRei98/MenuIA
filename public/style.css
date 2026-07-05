@@ -614,7 +614,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
   .cart-fab{
     display:none;
     position:fixed;
-    bottom:calc(env(safe-area-inset-bottom) + 14px);
+    bottom:calc(env(safe-area-inset-bottom) + 70px);
     left:16px;right:16px;
     background:var(--gold);
     border-radius:18px;
@@ -637,7 +637,7 @@ html,body{height:100%;font-family:var(--font);background:var(--bg);color:var(--t
   .cart-bar{display:none !important}
 
   /* Padding extra inferior al menu-list para que no quede bajo el FAB */
-  .menu-list{padding-bottom:calc(90px + env(safe-area-inset-bottom)) !important}
+  .menu-list{padding-bottom:calc(150px + env(safe-area-inset-bottom)) !important}
 }
 
 /* ── RED NETWORK VIEW ────────────────────────────────────────────────── */
