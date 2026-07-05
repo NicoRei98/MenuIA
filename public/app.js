@@ -82,11 +82,13 @@ async function init() {
       set('entry-rest-tagline', r.city + ', ' + r.region);
     }
     renderMenu();
+    updateEntryQR();
     switchTab('client');
     return;
   }
 
   renderMenu();
+  updateEntryQR();
   renderMenuAdmin();
   await loadRestaurantStats();
   renderDashboard();
@@ -1130,8 +1132,17 @@ async function renderClientes() {
 }
 
 // ── QR HELPERS ────────────────────────────────────────────────────────
+function updateEntryQR() {
+  const id = activeRestaurant?.id;
+  const param = id ? `?restaurant=${encodeURIComponent(id)}` : '';
+  const img = document.getElementById('entry-qr-img');
+  if (img) img.src = `/api/qr${param}`;
+  const adminImg = document.querySelector('.admin-qr-img');
+  if (adminImg) adminImg.src = `/api/qr${param}`;
+}
 function copyQRUrl() {
-  const url = window.location.origin;
+  const id = activeRestaurant?.id;
+  const url = window.location.origin + (id ? `/${id}` : '');
   navigator.clipboard.writeText(url).then(() => {
     const btn = event.currentTarget;
     const orig = btn.innerHTML;
@@ -1140,9 +1151,10 @@ function copyQRUrl() {
   });
 }
 function downloadQR() {
+  const id = activeRestaurant?.id;
   const a = document.createElement('a');
-  a.href = '/api/qr';
-  a.download = 'menuai-qr.svg';
+  a.href = `/api/qr${id ? `?restaurant=${encodeURIComponent(id)}` : ''}`;
+  a.download = `qr-${id || 'menu'}.svg`;
   a.click();
 }
 
@@ -1205,6 +1217,7 @@ async function activateRestaurant(id) {
   renderMenu();
   renderMenuAdmin();
   renderMesas();
+  updateEntryQR();
 
   showToast(`${r.emoji} Cambiado a ${r.name} — todas las vistas actualizadas`);
 }
