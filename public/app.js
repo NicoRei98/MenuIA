@@ -74,6 +74,8 @@ async function init() {
   if (isQRMode) {
     document.querySelector('.topnav')?.remove();
     document.querySelector('.entry-qr-section')?.remove();
+    document.getElementById('demo-nav-btn')?.remove();
+    document.getElementById('mobile-nav-sheet')?.remove();
     const r = activeRestaurant;
     if (r) {
       const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
@@ -82,7 +84,7 @@ async function init() {
       set('entry-rest-desc', `Bienvenido a ${r.name}. Elige cómo quieres continuar.`);
     }
     renderMenu();
-    loadRestaurantStats();
+    await loadRestaurantStats();
     switchTab('entry');
     return;
   }

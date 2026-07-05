@@ -184,9 +184,16 @@ app.use(express.static(path.join(__dirname, 'public')));
 const client = new Anthropic({ apiKey: process.env.ANTHROPIC_API_KEY });
 
 // ── HEALTH / DIAGNOSTICS ─────────────────────────────────────────────
-app.get('/api/health', (_req, res) => {
+app.get('/api/health', async (_req, res) => {
   const hasKey = !!(process.env.ANTHROPIC_API_KEY && process.env.ANTHROPIC_API_KEY.startsWith('sk-ant-'));
-  res.json({ ok: true, ai: hasKey, env: process.env.NODE_ENV || 'development' });
+  let aiTest = null;
+  if (hasKey) {
+    try {
+      const msg = await client.messages.create({ model:'claude-haiku-4-5-20251001', max_tokens:10, messages:[{role:'user',content:'di "ok"'}] });
+      aiTest = msg.content[0]?.text || 'responded';
+    } catch(e) { aiTest = 'error: ' + e.message; }
+  }
+  res.json({ ok: true, ai: hasKey, aiTest, env: process.env.NODE_ENV || 'development' });
 });
 
 // ── REST: RESTAURANTS ─────────────────────────────────────────────────
