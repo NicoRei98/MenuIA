@@ -18,7 +18,6 @@ const CAT_LABELS = {
   pizzas: 'Pizzas', kids: 'Kids',
   cervezas: 'Cervezas', cheladas: 'Cheladas', invitadas: 'Invitadas',
   'sin alcohol': 'Sin Alcohol', bebidas: 'Bebidas',
-  merch: 'Merch',
 };
 
 // ── STATE ─────────────────────────────────────────────────────────────
