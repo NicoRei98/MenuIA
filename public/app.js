@@ -3,12 +3,22 @@ let MENU = [];
 
 const CAT_LABELS = {
   todos: 'Todo',
+  // Restaurantes clásicos
   entradas: 'Entradas', principales: 'Principales', pastas: 'Pastas',
   postres: 'Postres', bebestibles: 'Bebestibles',
+  // Prima Bar
   frescos: 'Frescos', calientes: 'Calientes', fritos: 'Fritos',
   sandwich: 'Sandwich', cocteles: 'Cócteles', 'sin-alcohol': 'Sin Alcohol',
-  espirituosos: 'Espirituosos', cervezas: 'Cervezas', bebidas: 'Bebidas',
-  vinos: 'Vinos',
+  espirituosos: 'Espirituosos', vinos: 'Vinos',
+  // Kross Bar
+  'coctelería': 'Coctelería', 'de autor': 'De Autor', atemporales: 'Atemporales',
+  mocktails: 'Mocktails', spritz: 'Spritz', destilados: 'Destilados',
+  jugos: 'Jugos', cafetería: 'Cafetería',
+  crudos: 'Crudos', fuertes: 'Fuertes', burgers: 'Burgers',
+  pizzas: 'Pizzas', kids: 'Kids',
+  cervezas: 'Cervezas', cheladas: 'Cheladas', invitadas: 'Invitadas',
+  'sin alcohol': 'Sin Alcohol', bebidas: 'Bebidas',
+  merch: 'Merch',
 };
 
 // ── STATE ─────────────────────────────────────────────────────────────
