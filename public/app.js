@@ -60,8 +60,9 @@ async function init() {
   }));
 
   // Determine which restaurant to load
+  const defaultRestId = NETWORK_RESTAURANTS[0]?.id || 'el-rincon';
   const targetRestId = (urlRestId && NETWORK_RESTAURANTS.find(x => x.id === urlRestId))
-    ? urlRestId : 'el-rincon';
+    ? urlRestId : defaultRestId;
   isQRMode = !!(urlRestId && NETWORK_RESTAURANTS.find(x => x.id === urlRestId));
 
   const mRes = await fetch(`/api/restaurants/${targetRestId}/menu`);
@@ -1468,6 +1469,7 @@ async function showRestaurant(id) {
         <button class="primary-btn" style="padding:6px 12px;font-size:12px" onclick="switchTab('entry')"><i class="ti ti-qrcode"></i> Entrada</button>
         <button class="primary-btn" style="padding:6px 12px;font-size:12px" onclick="switchTab('client')"><i class="ti ti-device-mobile"></i> Cliente</button>
         <button class="primary-btn" style="padding:6px 12px;font-size:12px" onclick="switchTab('admin')"><i class="ti ti-layout-dashboard"></i> Admin</button>
+        <button class="primary-btn" style="padding:6px 12px;font-size:12px;background:rgba(220,60,60,0.15);color:#e05555;border:1px solid rgba(220,60,60,0.35)" onclick="deleteRestaurant('${r.id}','${r.name}')"><i class="ti ti-trash"></i> Eliminar</button>
       </div>
     </div>
     <div class="rest-subtabs-bar">
@@ -1485,6 +1487,23 @@ async function showRestaurant(id) {
 function closeRestaurantDetail() {
   document.getElementById('red-restaurant-detail').style.display = 'none';
   document.getElementById('red-grid-view').style.display = 'block';
+}
+
+async function deleteRestaurant(id, name) {
+  if (!confirm(`¿Eliminar "${name}"? Esta acción no se puede deshacer.`)) return;
+  try {
+    const res = await fetch(`/api/restaurants/${id}`, { method: 'DELETE' });
+    if (!res.ok) { alert('Error al eliminar'); return; }
+    NETWORK_RESTAURANTS.splice(NETWORK_RESTAURANTS.findIndex(r => r.id === id), 1);
+    // If the deleted restaurant was active, switch to first remaining
+    if (activeRestaurant?.id === id) {
+      const next = NETWORK_RESTAURANTS[0];
+      if (next) await activateRestaurant(next.id);
+    }
+    closeRestaurantDetail();
+    renderRestaurantGrid();
+    showToast(`${name} eliminado`);
+  } catch { alert('Error de conexión'); }
 }
 
 function switchRestSubtab(tab, el) {

@@ -73,6 +73,7 @@ db.exec(`
 `);
 try { db.exec('ALTER TABLE users ADD COLUMN password TEXT DEFAULT NULL'); } catch {}
 try { db.exec("CREATE UNIQUE INDEX IF NOT EXISTS idx_users_email ON users (email) WHERE email IS NOT NULL"); } catch {}
+try { db.exec('ALTER TABLE restaurants ADD COLUMN sort_order INTEGER DEFAULT 99'); } catch {}
 
 // ── MENÚ DE EL RINCÓN (fuente para AI + seed) ─────────────────────────
 const RINCON_MENU = [
@@ -104,13 +105,14 @@ function seedIfEmpty() {
   if (n > 0) return;
 
   const seedRestaurants = [
-    { id:'el-rincon',    name:'El Rincón',    emoji:'🍖', city:'Providencia', region:'Santiago',   tables:20, visits:0, orders_count:0, revenue:0, avg_ticket:0, upsell_pct:0, registered_users:0, since:'Mar 2025' },
-    { id:'la-pergola',   name:'La Pérgola',   emoji:'🌿', city:'Las Condes',  region:'Santiago',   tables:15, visits:0, orders_count:0, revenue:0, avg_ticket:0, upsell_pct:0, registered_users:0, since:'Abr 2025' },
-    { id:'mar-tierra',   name:'Mar & Tierra', emoji:'🐟', city:'Reñaca',      region:'Valparaíso', tables:12, visits:0, orders_count:0, revenue:0, avg_ticket:0, upsell_pct:0, registered_users:0, since:'May 2025' },
-    { id:'cafe-matinal', name:'Café Matinal', emoji:'☕', city:'Ñuñoa',       region:'Santiago',   tables:8,  visits:0, orders_count:0, revenue:0, avg_ticket:0, upsell_pct:0, registered_users:0, since:'Feb 2025' },
+    { id:'krossbar',     name:'Kross Bar',    emoji:'🍺', city:'Las Condes',  region:'Santiago',   tables:15, visits:0, orders_count:0, revenue:0, avg_ticket:0, upsell_pct:0, registered_users:0, since:'Jul 2026', sort_order:0 },
+    { id:'el-rincon',    name:'El Rincón',    emoji:'🍖', city:'Providencia', region:'Santiago',   tables:20, visits:0, orders_count:0, revenue:0, avg_ticket:0, upsell_pct:0, registered_users:0, since:'Mar 2025', sort_order:99 },
+    { id:'la-pergola',   name:'La Pérgola',   emoji:'🌿', city:'Las Condes',  region:'Santiago',   tables:15, visits:0, orders_count:0, revenue:0, avg_ticket:0, upsell_pct:0, registered_users:0, since:'Abr 2025', sort_order:99 },
+    { id:'mar-tierra',   name:'Mar & Tierra', emoji:'🐟', city:'Reñaca',      region:'Valparaíso', tables:12, visits:0, orders_count:0, revenue:0, avg_ticket:0, upsell_pct:0, registered_users:0, since:'May 2025', sort_order:99 },
+    { id:'cafe-matinal', name:'Café Matinal', emoji:'☕', city:'Ñuñoa',       region:'Santiago',   tables:8,  visits:0, orders_count:0, revenue:0, avg_ticket:0, upsell_pct:0, registered_users:0, since:'Feb 2025', sort_order:99 },
   ];
-  const insR = db.prepare('INSERT INTO restaurants (id,name,emoji,city,region,tables,visits,orders_count,revenue,avg_ticket,upsell_pct,registered_users,since) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)');
-  seedRestaurants.forEach(r => insR.run(r.id,r.name,r.emoji,r.city,r.region,r.tables,r.visits,r.orders_count,r.revenue,r.avg_ticket,r.upsell_pct,r.registered_users,r.since));
+  const insR = db.prepare('INSERT INTO restaurants (id,name,emoji,city,region,tables,visits,orders_count,revenue,avg_ticket,upsell_pct,registered_users,since,sort_order) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)');
+  seedRestaurants.forEach(r => insR.run(r.id,r.name,r.emoji,r.city,r.region,r.tables,r.visits,r.orders_count,r.revenue,r.avg_ticket,r.upsell_pct,r.registered_users,r.since,r.sort_order));
 
   const insM = db.prepare('INSERT INTO menu_items (id,restaurant_id,emoji,name,price,cat,desc,diet,contains,sort_order) VALUES (?,?,?,?,?,?,?,?,?,?)');
   RINCON_MENU.forEach((m,i) => insM.run(m.id,'el-rincon',m.emoji,m.name,m.price,m.cat,m.desc,JSON.stringify(m.diet),JSON.stringify(m.contains),i));
@@ -198,7 +200,7 @@ app.get('/api/health', async (_req, res) => {
 
 // ── REST: RESTAURANTS ─────────────────────────────────────────────────
 app.get('/api/restaurants', (_req, res) => {
-  const rows = db.prepare('SELECT * FROM restaurants WHERE active=1 ORDER BY rowid').all();
+  const rows = db.prepare('SELECT * FROM restaurants WHERE active=1 ORDER BY sort_order ASC, rowid ASC').all();
   res.json({ restaurants: rows });
 });
 
