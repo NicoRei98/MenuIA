@@ -99,6 +99,15 @@ async function init() {
     return;
   }
 
+  // Update entry view texts with the active restaurant
+  if (activeRestaurant) {
+    const r = activeRestaurant;
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    set('entry-rest-name', r.name);
+    set('entry-rest-tagline', r.city + ', ' + r.region);
+    set('entry-rest-desc', `Bienvenido a ${r.name}. Escanea el QR de tu mesa o accede desde aquí.`);
+  }
+
   renderMenu();
   updateEntryQR();
   renderMenuAdmin();
@@ -1252,6 +1261,7 @@ async function activateRestaurant(id) {
   const set = (elId, val) => { const el = document.getElementById(elId); if (el) el.textContent = val; };
   set('entry-rest-name', r.name);
   set('entry-rest-tagline', r.city + ', ' + r.region);
+  set('entry-rest-desc', `Bienvenido a ${r.name}. Escanea el QR de tu mesa o accede desde aquí.`);
   set('entry-qr-label-text', `Código QR de acceso · ${r.name}`);
   set('client-rest-name', r.name);
   set('client-rest-sub', 'MENÚ DIGITAL · ' + r.city.toUpperCase());
